@@ -1,0 +1,75 @@
+# ==============================
+# Python environment and cache
+# ==============================
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ==============================
+# Secrets and environment files
+# ==============================
+.env
+.env.*
+!.env.example
+
+# ==============================
+# Jupyter
+# ==============================
+.ipynb_checkpoints/
+
+# ==============================
+# Frontend
+# ==============================
+dashboard/node_modules/
+dashboard/dist/
+dashboard/.vite/
+
+# ==============================
+# Generated datasets
+# ==============================
+data/
+
+# ==============================
+# Artifacts: allow only runtime files
+# ==============================
+artifacts/*
+
+!artifacts/baseline/
+artifacts/baseline/*
+!artifacts/baseline/random_forest_fd001.joblib
+!artifacts/baseline/metrics.json
+
+!artifacts/uncertainty/
+artifacts/uncertainty/*
+!artifacts/uncertainty/conformal_metrics.json
+!artifacts/uncertainty/engine_level_conformal_metrics.json
+
+!artifacts/drift/
+artifacts/drift/*
+!artifacts/drift/calibrated_sensor/
+artifacts/drift/calibrated_sensor/*
+!artifacts/drift/calibrated_sensor/calibrated_sensor_drift_metrics.json
+!artifacts/drift/calibrated_sensor/sensor_profiles_floor_0.05.csv
+
+!artifacts/drift/sensor_variance_drift/
+artifacts/drift/sensor_variance_drift/*
+!artifacts/drift/sensor_variance_drift/sensor_variance_drift_metrics.json
+!artifacts/drift/sensor_variance_drift/variance_reference_profiles.csv
+
+# ==============================
+# Temporary files and logs
+# ==============================
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# ==============================
+# IDE
+# ==============================
+.vscode/
+.idea/

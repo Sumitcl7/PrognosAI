@@ -1,0 +1,13 @@
+{
+    "method": "Split Conformal Prediction",
+    "dataset": "NASA C-MAPSS FD001",
+    "alpha": 0.1,
+    "target_coverage": 0.9,
+    "conformal_quantile": 29.48501898363145,
+    "calibration_engines": 20,
+    "calibration_observations": 4070,
+    "calibration_MAE": 12.335906603644323,
+    "calibration_empirical_coverage": 0.9002457002457003,
+    "calibration_average_interval_width": 46.68528260065707,
+    "rul_cap": 125
+}

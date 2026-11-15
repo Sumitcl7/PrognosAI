@@ -1,0 +1,17 @@
+{
+    "method": "Engine-Level Split Conformal Prediction",
+    "dataset": "NASA C-MAPSS FD001",
+    "alpha": 0.1,
+    "target_coverage": 0.9,
+    "calibration_engines": 20,
+    "training_engines": 80,
+    "calibration_observations": 4070,
+    "conformal_quantile": 67.91945325122067,
+    "calibration_MAE": 12.335906603644323,
+    "observation_coverage": 0.9997542997542997,
+    "trajectory_coverage": 0.95,
+    "average_interval_width": 89.4941008571122,
+    "rul_cap": 125,
+    "score_definition": "Maximum absolute residual across observed cycles for each calibration engine",
+    "coverage_note": "The engine-level finite-sample guarantee relies on exchangeability of engine trajectories and a fixed prediction model. Calibration coverage is descriptive; it is not an independent test evaluation."
+}
