@@ -1,39 +1,81 @@
-﻿import pandas as pd
+﻿
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
-from src.api.main import app
+from src.api import main as api_main
+from src.api.prediction_service import PrognosAIPredictionService
 
 
-@pytest.fixture(scope="module")
+FEATURES = [
+    "setting_1", "setting_2", "setting_3",
+    "sensor_2", "sensor_3", "sensor_4",
+    "sensor_6", "sensor_7", "sensor_8",
+    "sensor_9", "sensor_11", "sensor_12",
+    "sensor_13", "sensor_14", "sensor_15",
+    "sensor_17", "sensor_20", "sensor_21",
+]
+
+
+class DummyModel:
+    """Deterministic model used only for API integration tests."""
+
+    feature_names_in_ = np.array(FEATURES)
+
+    def predict(self, features):
+        return np.full(len(features), 50.0)
+
+
+class DummyDriftMonitor:
+    """Controlled drift result without calibration artifacts."""
+
+    def score_window(self, window):
+        return {
+            "evaluated": True,
+            "status": "stable",
+            "maintenance_drift_status": "stable",
+        }
+
+
+@pytest.fixture
 def client():
-    with TestClient(app) as test_client:
-        yield test_client
+    # Create the real service without loading external model artifacts.
+    service = PrognosAIPredictionService.__new__(
+        PrognosAIPredictionService
+    )
+
+    service.model = DummyModel()
+    service.features = FEATURES
+    service.observation_quantile = 10.0
+    service.engine_quantile = 15.0
+    service.observation_alpha = 0.10
+    service.engine_alpha = 0.10
+    service.drift_monitor = DummyDriftMonitor()
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(
+            api_main,
+            "PrognosAIPredictionService",
+            lambda: service,
+        )
+
+        with TestClient(api_main.app) as test_client:
+            yield test_client
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def valid_observations():
-    data = pd.read_csv(
-        "data/processed/FD001_train_with_RUL.csv"
-    )
+    observations = []
 
-    history = (
-        data[data["engine_id"] == 1]
-        .sort_values("cycle")
-        .head(20)
-    )
+    for cycle in range(1, 21):
+        row = {"cycle": cycle}
 
-    features = [
-        "cycle",
-        "setting_1", "setting_2", "setting_3",
-        "sensor_2", "sensor_3", "sensor_4",
-        "sensor_6", "sensor_7", "sensor_8",
-        "sensor_9", "sensor_11", "sensor_12",
-        "sensor_13", "sensor_14", "sensor_15",
-        "sensor_17", "sensor_20", "sensor_21",
-    ]
+        for index, feature in enumerate(FEATURES):
+            row[feature] = 0.1 * (index + 1) + 0.001 * cycle
 
-    return history[features].to_dict(orient="records")
+        observations.append(row)
+
+    return observations
 
 
 def test_root_endpoint(client):
